@@ -4,7 +4,7 @@
 
 (function(window){
 
-  var WORKER_PATH = 'recorderWorker.js';
+  var WORKER_PATH = 'https://raw.githubusercontent.com/vva4innovation/SummerProject2014/master/recorderWorker.js';
   var Recorder = function(source, cfg){
     var config = cfg || {};
     var bufferLen = config.bufferLen || 4096;
