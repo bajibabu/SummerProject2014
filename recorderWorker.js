@@ -1,5 +1,5 @@
 /**
- * @author Vishnu Anirudh
+ * @author https://github.com/mattdiamond/Recorderjs
  */
 var recLength = 0,
   recBuffersL = [],
