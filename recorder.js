@@ -1,5 +1,5 @@
 /**
- * @author Vishnu Anirudh
+ * @author https://github.com/mattdiamond/Recorderjs
  */
 
 (function(window){
