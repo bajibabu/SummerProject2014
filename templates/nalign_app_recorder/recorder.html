@@ -1,0 +1,198 @@
+{% extends "base.html" %}    
+
+
+{% block title %}{{"Media Recording"}}{% endblock %}
+
+ {% block content %}
+ 
+  <div id="logger">Recording</div>
+  <br/>
+  <audio id="playback" controls autoplay></audio> <br/>
+<input id="recordButton" value="Record" type="Button">
+<input id="stopButton" value="Stop" type="Button">
+</br>
+</br>
+  <div>
+   <input type="button" value="Finalize your voice" id="test">
+   
+ </div>
+
+
+<a id="downLoad" download="record1.wav"><button id="downLoad1" disabled=true>Download Your voice</button></a> 
+
+ <!-- &&##start of playback-->
+ <form method="post">
+ {% csrf_token %}
+ </br>
+ <input id="next_page" type="submit" value="Proceed ">
+ </form>
+ 
+ <!-- &&## end -->
+ 
+  <script type="text/javascript">
+  var audioURL =null;
+  var recorder;
+  var mediaRecorder = null;
+  
+  function log(msg) {
+    // alert(msg);
+    document.getElementById('logger').textContent = msg;
+  }
+
+  //OnSuccessCall
+  function startRecording(stream) {
+     
+      mediaRecorder = new MediaRecorder(stream); //###Browser compatibility issue
+      var chunks = [];      
+      recorder = new Recorder(mediaRecorder);
+      mediaRecorder.ondataavailable = function ondataavailable(e) {
+         console.log("data available");
+
+//  	var clipName = prompt('Enter a name for your sound clip');
+      	chunks.push(e.data);  // or send evt.data using an XMLHttpRequest to the server
+      
+      var url = (window.URL || window.webkitURL).createObjectURL(e.data);
+      
+        document.getElementById('playback').src =url;
+        
+      };
+
+      document.getElementById('recordButton').onclick=function(){
+      document.getElementById('test').disabled=false;
+      document.getElementById('downLoad1').disabled=true;
+      
+      console.log('start');
+      mediaRecorder.start();
+      }
+
+      document.getElementById('stopButton').onclick=function() {
+        console.log('stop recorder: ' + mediaRecorder.state);
+        mediaRecorder.stop();
+        mediaRecorder.requestData();
+      }
+      
+      mediaRecorder.onstop = function(e) {
+      	console.log('onstop fired');
+    	var blob = new Blob(chunks, { 'type' : 'audio/wav' });// make a blob out of all the chunks
+    	var url1=URL.createObjectURL(blob);//Taking the URL of blob
+      	//window.open(URL.createObjectURL(blob));// allow the user to download the opus file.....createURL creates a URL for the blob
+      	audioURL=url1;
+      	createDownloadLink(url1)
+    };
+	
+  }
+  
+  window.onload=function() {
+  navigator.getUserMedia = ( navigator.getUserMedia || //###Browser compatibility issue
+                       navigator.webkitGetUserMedia ||
+                       navigator.mozGetUserMedia ||
+                       navigator.msGetUserMedia);
+                       
+    navigator.getUserMedia({
+      audio: true,
+      video: false
+    }, function onGetMedia(localMediaStream) {
+      startRecording(localMediaStream);
+    }, function onError(err) {
+      log('Error occurs when fetching media: ' + err);
+    });
+  }
+ 
+ //....................start playback ... &&##
+  document.getElementById('test').onclick=function() {
+  this.disabled=true;
+//document.getElementById('playbackAudio').style.display='block';
+
+document.getElementById('downLoad').href=createDownloadLink(audioURL);
+document.getElementById('downLoad1').disabled=false;
+}
+
+function createDownloadLink(blob) {
+	  recorder && recorder.exportWAV(function(blob) {
+	  var url = URL.createObjectURL(blob);
+          var li = document.createElement('li');
+          var au = document.createElement('audio');
+          var hf = document.createElement('a');
+      
+          au.controls = true;
+          au.src = url;
+          hf.href = url;
+          hf.download = new Date().toISOString() + '.wav';
+          hf.innerHTML = hf.download;
+          li.appendChild(au);
+          li.appendChild(hf);
+          recordingslist.appendChild(li);
+    });
+  } 
+
+/*
+console.log({{STATIC_URL}});
+
+  var wavesurfer = Object.create(WaveSurfer);
+
+wavesurfer.init({
+  // your options here
+  container: "#waveform"
+});
+
+wavesurfer.on('ready', function () {
+    var timeline = Object.create(WaveSurfer.Timeline);
+
+    timeline.init({
+        wavesurfer: wavesurfer,
+        container: "#disp"
+    });
+});
+
+wavesurfer.load('/home/venkateshvishnuanirudh/Desktop/demo2.wav');
+
+wavesurfer.on('ready', function () {
+    var handlers = {
+        'play': function () {
+            wavesurfer.playPause();
+        }
+    };
+
+    var map = {
+        32: 'play'       // spacebar
+    };
+
+    document.addEventListener('keydown', function (e) {
+        if (e.keyCode in map) {
+            e.preventDefault();
+            var handler = handlers[map[e.keyCode]];
+            handler && handler(e);
+        }
+    });
+
+    document.addEventListener('click', function (e) {
+        var action = e.target.dataset && e.target.dataset.action;
+        if (action && action in handlers) {
+            handlers[action](e);
+        }
+    });
+});
+*/
+  
+  //end playback....##&&
+  </script>
+  {% endblock %}
+  
+ {% block footer %}
+ <!--
+ <div >
+    <h1>Form</h1>
+    <form action="#" method="post" enctype="multipart/form-data">
+        {% csrf_token %} 
+        {{form}} 
+        <input type="submit" value="Upload" />
+    </form>
+   
+</div>
+-->
+  <h>. . . . . .</h>
+  {% endblock %}
+
+  
+
+

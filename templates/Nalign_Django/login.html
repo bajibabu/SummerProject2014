@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+
+{% block main %}
+
+{% if form.errors %}
+<p>Your username and password didn't match. Please try again.</p>
+{% endif %}
+
+<form name="LoginForm" action="/login/" method="post">
+{% csrf_token %}
+{% if next %}
+<input type="hidden" name="next" value="{{ next }}" />
+{% endif %}
+
+<input type="text" id="username" name="username"  placeholder="Username">
+<input type="password" name="password" id="password" placeholder="Password">
+<button type="submit" class="btn">Login</button>
+</form>
+{% endblock %}

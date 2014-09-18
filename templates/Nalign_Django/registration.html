@@ -1,0 +1,15 @@
+{% extends "base.html" %} 
+   
+{% block registration %}
+<form action="" method="post" enctype="multipart/form-data">
+{% csrf_token %}
+
+{% for field in form %}
+</br>
+{{ field.label_tag }} {{ field }}
+</br>
+{% endfor %}
+<p><input type="submit" value="Register" /></p>
+</form>
+{% endblock %}
+

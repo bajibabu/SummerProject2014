@@ -1,0 +1,43 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<html lang="en">
+<head>
+<style type='text/css'>
+    ul { list-style: none; }
+    #recordingslist audio { display: block; margin-bottom: 10px; }
+  </style>
+
+{% load static from staticfiles %}
+ <script src="{%static "js/wavesurfer.min.js"%}"> </script>
+ <script src="{%static "js/wavesurfer.timeline.js"%}"></script>
+  	 <link rel="stylesheet" type="text/css" href="{% static "css/style.css" %}">
+ <script src="{%static "js/recorder.js"%}"></script>
+
+ <script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+    <title>{% block title %}{% endblock %}</title>
+    
+    {%block header%}{%endblock%}
+</head>
+<body>
+    
+    {% block content %}{% endblock %}
+    
+   {% block upload_file %}{% endblock %}
+   
+   {% block main %}{% endblock %}
+   
+    {% block thank_you %}{% endblock %}
+    
+{% block registration %}{% endblock %}
+
+{% block output_files %}{% endblock %}
+    
+{% block recorder2 %}{% endblock %}
+{% block mic_level %}{% endblock %}
+
+    </br>
+    {% block footer %}
+  
+    {% endblock %}
+    
+</body>
+</html>

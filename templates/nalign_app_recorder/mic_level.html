@@ -1,0 +1,26 @@
+{% extends "base.html" %}    
+
+ {% block mic_level %}
+ <style type='text/css'>
+   #test {
+     width: 500px;
+     height:50px;
+     margin: 0px auto;
+     border: 1px solid red;
+   }
+    </style>
+	 {% load static from staticfiles %}
+	 <script src="{%static "js/volume-meter.js"%}"></script>
+ 	<script src="{%static "js/mic_level_main.js"%}"></script>
+		<div id="test">
+		<canvas id="meter" width="500" height="50"></canvas>
+		</div>
+		
+		<script>
+		clipLevel=0.98;
+		var meter = createAudioMeter(audioContext,clipLevel,averaging,clipLag);
+		meter.checkClipping();
+
+	</script>
+		
+{% endblock %}

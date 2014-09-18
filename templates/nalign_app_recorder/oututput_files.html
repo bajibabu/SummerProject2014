@@ -1,0 +1,56 @@
+{% extends "base.html" %} 
+   
+{% block output_files %}
+ <input type="button" value="Submit" id="test">
+<script>
+ document.getElementById('test').onclick=function() {
+  this.disabled=true;
+
+  var wavesurfer = Object.create(WaveSurfer);
+
+wavesurfer.init({
+  // your options here
+  container: "#waveform"
+});
+
+wavesurfer.on('ready', function () {
+    var timeline = Object.create(WaveSurfer.Timeline);
+
+    timeline.init({
+        wavesurfer: wavesurfer,
+        container: "#disp"
+    });
+});
+
+wavesurfer.load('{{STATIC_URL}}js/demo1.wav');
+
+wavesurfer.on('ready', function () {
+    var handlers = {
+        'play': function () {
+            wavesurfer.playPause();
+        }
+    };
+
+    var map = {
+        32: 'play'       // spacebar
+    };
+
+    document.addEventListener('keydown', function (e) {
+        if (e.keyCode in map) {
+            e.preventDefault();
+            var handler = handlers[map[e.keyCode]];
+            handler && handler(e);
+        }
+    });
+
+    document.addEventListener('click', function (e) {
+        var action = e.target.dataset && e.target.dataset.action;
+        if (action && action in handlers) {
+            handlers[action](e);
+        }
+    });
+});
+
+  }
+</script>
+{% endblock %}

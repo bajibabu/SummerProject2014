@@ -1,0 +1,188 @@
+{% extends "base.html" %}    
+
+ {% block recorder2 %}
+    <audio controls autoplay></audio>
+    {% load static from staticfiles %}
+
+    <script type="text/javascript" src="{%static "js/recorder.js"%}"> </script>
+
+    <input onclick="startRecording(this)" type="button" value="start recording" />
+    <input onclick="stopRecording(this)" type="button" value="stop recording and play" />
+   
+	<div>
+       {% csrf_token %}
+      
+       </br>
+       <button class='btn add-file'>Add</button>
+       </div>	
+   
+   <ul id="recordingslist"></ul>
+    
+  
+    <script>
+      var onFail = function(e) {
+        console.log('Rejected!', e);
+      };
+
+     var onSuccess = function(s) {
+     var context = null,
+     usingWebAudio = true;
+     if (typeof AudioContext !== 'undefined') {
+
+     context = new AudioContext();
+      } else if (typeof webkitAudioContext !== 'undefined') {
+
+       context = new webkitAudioContext();
+   } else {
+    usingWebAudio = false; 
+   }
+   
+   
+    var mediaStreamSource = context.createMediaStreamSource(s);
+        recorder = new Recorder(mediaStreamSource);
+        recorder.record();
+
+        // audio loopback
+        // mediaStreamSource.connect(context.destination);
+      }
+
+      window.URL = window.URL || window.webkitURL;
+      navigator.getUserMedia  = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || 		     navigator.msGetUserMedia;
+
+      var recorder;
+      var audio = document.querySelector('audio');
+
+      function startRecording(button) {
+      	
+        if (navigator.getUserMedia) {
+          navigator.getUserMedia({audio: true}, onSuccess, onFail);
+          button.disabled = true;
+          button.nextElementSibling.disabled = false;
+        } else {
+          console.log('navigator.getUserMedia not present');
+        }
+      }
+
+      function stopRecording(button) {
+        recorder.stop();
+        button.disabled = true;
+        button.previousElementSibling.disabled = false;
+        
+         createDownloadLink();
+        recorder.clear();
+    }
+    function createDownloadLink() {
+    recorder && recorder.exportWAV(function(blob) {
+       
+      var url = URL.createObjectURL(blob);
+      var li = document.createElement('li');
+      var au = document.createElement('audio');
+      var hf = document.createElement('a');
+      
+      au.controls = true;
+      au.src = url;
+      hf.href = url;
+      hf.download = new Date().toISOString() + '.wav';
+      hf.innerHTML = hf.download;
+      
+      li.appendChild(au);
+      li.appendChild(hf);
+      recordingslist.appendChild(li);
+        
+      uploadBlob(blob);
+    });
+  }
+  
+  function uploadBlob(blob) {
+  var xhr = new XMLHttpRequest();
+  xhr.open('POST', '/posts/11', true);
+  xhr.onload = function(e) { console.log('inside UploadBlob'); };
+/*var progressBar = document.querySelector('progress');
+  xhr.upload.onprogress = function(e) {
+    if (e.lengthComputable) {
+      progressBar.value = (e.loaded / e.total) * 100;
+      progressBar.textContent = progressBar.value; // Fallback for unsupported browsers.
+    }
+  };*/
+
+  xhr.send(blob);
+
+  
+/*
+        var fd = new FormData();
+	fd.append('fname', 'test.wav');
+	fd.append('data', blob);
+	*/
+    /*	
+	$.ajax({
+    type: "POST",
+    url: "/wavs2/",
+    data: blob,
+    sucess: function() { console.log("Success!"); },
+    contentType: "application/json; charset=utf-8",
+    dataType: "json",
+    crossDomain:false,
+    //beforeSend: function(xhr, settings) {
+     // xhr.setRequestHeader("X-CSRFToken", csrftoken);
+    //}
+}); 
+*/
+/*
+$.ajax({
+    	type: 'POST',
+    	url: '/files/',
+    	data: fd,
+    	processData: false,
+    	contentType: false,//"application/json; charset=utf-8",
+	//dataType: "json",
+	//crossDomain:false,
+    	
+	success: function(data) {
+	console.log("everything worked!");
+	$("#body").append(data);
+	},
+	error: function(obj, status, err) { alert(err); console.log(err); }
+});
+
+var csrftoken = getCookie('csrftoken');
+
+$.ajaxSetup({
+    beforeSend: function(xhr, settings) {
+        if (!csrfSafeMethod(settings.type) && sameOrigin(settings.url)) {
+            // Send the token to same-origin, relative URLs only.
+            // Send the token only if the method warrants CSRF protection
+            // Using the CSRFToken value acquired earlier
+            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+        }
+    }
+});
+
+function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie != '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = jQuery.trim(cookies[i]);
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+function csrfSafeMethod(method) {
+    // these HTTP methods do not require CSRF protection
+    return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+}
+
+
+*/
+  }
+
+      
+    </script>
+  {% endblock %}
+
