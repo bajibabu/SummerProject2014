@@ -3,7 +3,7 @@ SummerProject2014
 
 This is a web application which makes it easier for the deaf people. This is done under the guidance of Prof. Jonas Beskow in KTH (Centre for Speech Technology) 
 
-Dependcies
+Dependencies
 =============
 1) django 1.6
 - sudo pip instatll Django==1.6
