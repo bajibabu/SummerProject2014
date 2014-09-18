@@ -20,4 +20,4 @@ Dependcies
 5) It uses the PostgreSQL as database server. To know more about the setting the postgre database please follow this beatuiful post https://www.digitalocean.com/community/tutorials/how-to-install-and-configure-django-with-postgres-nginx-and-gunicorn
 
 6) psycopg2
--sudo pip install psycopg2
+- sudo pip install psycopg2
